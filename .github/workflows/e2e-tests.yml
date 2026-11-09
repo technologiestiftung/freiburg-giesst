@@ -57,9 +57,9 @@ jobs:
       TEST_SUPABASE_SERVICE_ROLE_KEY: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS1kZW1vIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImV4cCI6MTk4MzgxMjk5Nn0.EGIM96RAZx35lJzdJsyH-qQwv8Hdp7fsn3W0YpN81IU
       VITE_MATOMO_SITE_ID: ""
       VITE_MATOMO_URL: ""
-      VITE_MAP_BOUNDING_BOX: "13.0824446341071,52.3281202651866,13.7682544186827,52.681600197973"
-      VITE_MAP_CENTER_LNG: "13.388836926491992"
-      VITE_MAP_CENTER_LAT: "52.494590307846366"
+      VITE_MAP_BOUNDING_BOX: "7.669289,47.949679,7.922047,48.060730"
+      VITE_MAP_CENTER_LNG: "7.8421"
+      VITE_MAP_CENTER_LAT: "47.9990"
       VITE_MAPBOX_API_ENDPOINT: "https://api.mapbox.com"
       VITE_MAP_PITCH_DEGREES: "45"
       VITE_MAP_MAX_ZOOM_LEVEL: "20"
@@ -117,7 +117,7 @@ jobs:
         id: checkout-api
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1, pinned to commit sha to avoid sha-hulud like attacks
         with:
-          repository: technologiestiftung/giessdenkiez-de-postgres-api
+          repository: technologiestiftung/freiburg-giesst-postgres-api
           ref: "staging"
           path: api
 
