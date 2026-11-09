@@ -1,0 +1,10 @@
+# Node version is read from .nvmrc
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+# SPA fallback (equivalent of vercel.json rewrite)
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
