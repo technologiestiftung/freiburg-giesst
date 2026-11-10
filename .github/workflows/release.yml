@@ -2,9 +2,12 @@ name: Release
 
 on:
   workflow_dispatch: # This allows the workflow to be triggered manually
+  release:
+    types: [published] # created by semantic-release (via GH_TOKEN)
 
 jobs:
   release:
+    if: github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code ⬇️
@@ -34,3 +37,30 @@ jobs:
         run: npx semantic-release --ci
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+
+  docker-image:
+    if: github.event_name == 'release'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    env:
+      IMAGE: ghcr.io/${{ github.repository }}
+      TAG: ${{ github.event.release.tag_name }}
+      LATEST: ${{ !github.event.release.prerelease }}
+    steps:
+      - name: Checkout code ⬇️
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1, pinned to commit sha to avoid sha-hulud like attacks
+
+      - name: Build and push image to GHCR 🐳
+        run: |
+          echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
+          docker build \
+            --label org.opencontainers.image.source="https://github.com/${{ github.repository }}" \
+            --label version="$TAG" \
+            --tag "$IMAGE:$TAG" .
+          docker push "$IMAGE:$TAG"
+          if [ "$LATEST" = "true" ]; then
+            docker tag "$IMAGE:$TAG" "$IMAGE:latest"
+            docker push "$IMAGE:latest"
+          fi
