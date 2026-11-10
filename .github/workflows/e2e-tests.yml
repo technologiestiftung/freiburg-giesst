@@ -120,6 +120,8 @@ jobs:
           repository: technologiestiftung/freiburg-giesst-postgres-api
           ref: "staging"
           path: api
+          # The API repo is private: needs a fine-grained PAT with read access to it.
+          token: ${{ secrets.POSTGRES_API_REPO_TOKEN }}
 
       - name: Install Supabase CLI ⚙️
         uses: supabase/setup-cli@46f7f98c7f948ad727d22c1e67fab04c223a0520 # v3.0.0, pinned to commit sha to avoid sha-hulud like attacks
@@ -201,6 +203,9 @@ jobs:
           sleep 1
           done
           echo "Supabase is ready!"
+
+      - name: Seed e2e test trees 🌳
+        run: psql "postgresql://postgres:postgres@localhost:54322/postgres" -v ON_ERROR_STOP=1 -f tests/e2e/seed-test-trees.sql
 
       - name: Run E2E test 🎭
         run: npm run test:e2e -- --project="${{ matrix.browser }}"
