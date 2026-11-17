@@ -13,9 +13,21 @@ const runtimeEnv: Plugin = {
 			? code.replace(/import\.meta\.env\.(VITE_\w+)/g, "window.__ENV__.$1")
 			: null;
 	},
-	transformIndexHtml: () => [
-		{ tag: "script", attrs: { src: "/env.js" }, injectTo: "head-prepend" },
-	],
+	transformIndexHtml: {
+		order: "pre",
+		handler: (html) => ({
+			// Matomo snippet: read from env.js too, skip tracking if unset
+			html: html
+				.replace(
+					'var u = "%VITE_MATOMO_URL%";',
+					"var u = window.__ENV__.VITE_MATOMO_URL; if (!u) return;",
+				)
+				.replace('"%VITE_MATOMO_SITE_ID%"', "window.__ENV__.VITE_MATOMO_SITE_ID"),
+			tags: [
+				{ tag: "script", attrs: { src: "/env.js" }, injectTo: "head-prepend" },
+			],
+		}),
+	},
 };
 
 // https://vitejs.dev/config/
