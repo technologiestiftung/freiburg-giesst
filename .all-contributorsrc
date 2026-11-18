@@ -114,7 +114,7 @@
 	"skipCi": true,
 	"repoType": "github",
 	"repoHost": "https://github.com",
-	"projectName": "giessdenkiez-de",
+	"projectName": "freiburg-giesst",
 	"projectOwner": "technologiestiftung",
 	"commitType": "docs"
 }
