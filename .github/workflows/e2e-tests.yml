@@ -4,9 +4,9 @@ permissions:
   packages: write
 on:
   push:
-    branches: [main, staging, dev]
+    branches: [main, staging]
   pull_request:
-    branches: [main, staging, dev]
+    branches: [main, staging]
   workflow_dispatch:
     inputs:
       debug_enabled:
