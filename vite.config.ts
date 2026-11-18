@@ -22,7 +22,10 @@ const runtimeEnv: Plugin = {
 					'var u = "%VITE_MATOMO_URL%";',
 					"var u = window.__ENV__.VITE_MATOMO_URL; if (!u) return;",
 				)
-				.replace('"%VITE_MATOMO_SITE_ID%"', "window.__ENV__.VITE_MATOMO_SITE_ID"),
+				.replace(
+					'"%VITE_MATOMO_SITE_ID%"',
+					"window.__ENV__.VITE_MATOMO_SITE_ID",
+				),
 			tags: [
 				{ tag: "script", attrs: { src: "/env.js" }, injectTo: "head-prepend" },
 			],
