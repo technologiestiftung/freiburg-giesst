@@ -165,19 +165,19 @@ jobs:
           deadline=$((SECONDS + timeout))
 
           # Sometimes the postgrest api and postgres are up, but individual postgrest endpoints are not ready yet.
-          # Therefore we check that a real table (e.g. `profiles`) is queryable, not just the
+          # Therefore we check that a real table (`trees`, readable by anon) is queryable, not just the
           # PostgREST root/OpenAPI endpoint — the root answers even when table privileges are missing,
           # which lets a broken stack look healthy here and only fail several steps later.
 
 
           until \
           HTTP_STATUS=$(curl -s --connect-timeout 5 --max-time 10 -o /tmp/supabase-health.body -w "%{http_code}" \
-          -H "apikey: $SUPABASE_ANON_KEY" http://localhost:54321/rest/v1/profiles) && \
+          -H "apikey: $SUPABASE_ANON_KEY" "http://localhost:54321/rest/v1/trees?limit=1") && \
           [ "$HTTP_STATUS" = "200" ] && \
           pg_isready -U postgres -h localhost -p 54322 >/tmp/pg_isready.out 2>&1; do
           if [ "$SECONDS" -ge "$deadline" ]; then
            echo "Timed out waiting for Supabase after ${SECONDS}s (limit ${timeout}s)"
-           echo "=== PostgREST health check (http://localhost:54321/rest/v1/profiles) ==="
+           echo "=== PostgREST health check (http://localhost:54321/rest/v1/trees?limit=1) ==="
            echo "HTTP status: ${HTTP_STATUS:-<failed>}"
            if [ -f /tmp/supabase-health.body ]; then
              echo "Response body (first 500 chars):"
