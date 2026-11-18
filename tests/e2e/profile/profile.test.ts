@@ -1,4 +1,5 @@
 import { expect } from "@playwright/test";
+import { babyTreeId } from "../constants";
 import { testWithLoggedInUser } from "../fixtures/test-with-logged-in-user";
 import { testWithAdoptedTree } from "../fixtures/test-with-adopted-tree";
 import { waterTree } from "../fixtures/tree-data";
@@ -25,7 +26,7 @@ testWithLoggedInUser.describe("Profile of a logged-in user", () => {
 	testWithLoggedInUser(
 		"should count the waterings of the user",
 		async ({ page, account }) => {
-			await waterTree({ account, treeId: "00008100:002faeaf", amount: 12 });
+			await waterTree({ account, treeId: babyTreeId, amount: 12 });
 
 			await page.goto("/profile");
 

@@ -4,9 +4,9 @@ permissions:
   packages: write
 on:
   push:
-    branches: [main, staging]
+    branches: [main, staging, dev]
   pull_request:
-    branches: [main, staging]
+    branches: [main, staging, dev]
   workflow_dispatch:
     inputs:
       debug_enabled:
@@ -57,9 +57,9 @@ jobs:
       TEST_SUPABASE_SERVICE_ROLE_KEY: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS1kZW1vIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImV4cCI6MTk4MzgxMjk5Nn0.EGIM96RAZx35lJzdJsyH-qQwv8Hdp7fsn3W0YpN81IU
       VITE_MATOMO_SITE_ID: ""
       VITE_MATOMO_URL: ""
-      VITE_MAP_BOUNDING_BOX: "13.0824446341071,52.3281202651866,13.7682544186827,52.681600197973"
-      VITE_MAP_CENTER_LNG: "13.388836926491992"
-      VITE_MAP_CENTER_LAT: "52.494590307846366"
+      VITE_MAP_BOUNDING_BOX: "7.669289,47.949679,7.922047,48.060730"
+      VITE_MAP_CENTER_LNG: "7.8421"
+      VITE_MAP_CENTER_LAT: "47.9990"
       VITE_MAPBOX_API_ENDPOINT: "https://api.mapbox.com"
       VITE_MAP_PITCH_DEGREES: "45"
       VITE_MAP_MAX_ZOOM_LEVEL: "20"
@@ -117,9 +117,11 @@ jobs:
         id: checkout-api
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1, pinned to commit sha to avoid sha-hulud like attacks
         with:
-          repository: technologiestiftung/giessdenkiez-de-postgres-api
+          repository: technologiestiftung/freiburg-giesst-postgres-api
           ref: "staging"
           path: api
+          # The API repo is private: needs a fine-grained PAT with read access to it.
+          token: ${{ secrets.GH_TOKEN }}
 
       - name: Install Supabase CLI ⚙️
         uses: supabase/setup-cli@46f7f98c7f948ad727d22c1e67fab04c223a0520 # v3.0.0, pinned to commit sha to avoid sha-hulud like attacks
@@ -201,6 +203,9 @@ jobs:
           sleep 1
           done
           echo "Supabase is ready!"
+
+      - name: Seed e2e test trees 🌳
+        run: psql "postgresql://postgres:postgres@localhost:54322/postgres" -v ON_ERROR_STOP=1 -f tests/e2e/seed-test-trees.sql
 
       - name: Run E2E test 🎭
         run: npm run test:e2e -- --project="${{ matrix.browser }}"
